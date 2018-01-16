@@ -24,7 +24,7 @@ import java.net.URL;
 public class UserService {
 
     private static final String baseBaiduUrl=
-            "http://localhost:8080/flight/search";
+            "http://localhost:8080/user/search";
 
 
     public static UserDetail setUserDetail(UserDetail userDetail) throws JSONException {

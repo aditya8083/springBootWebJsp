@@ -6,6 +6,7 @@ import com.flightui.service.FlightService;
 import com.google.gson.Gson;
 import org.json.JSONException;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -14,13 +15,15 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
+import java.util.Map;
 
 
 @WebServlet(urlPatterns = "/flight")
 public class FlightController extends HttpServlet {
 
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 		PrintWriter out = response.getWriter();
 
@@ -32,13 +35,19 @@ public class FlightController extends HttpServlet {
 
 			FlightSearchRequest flightSearchRequest = gson.fromJson(reader, FlightSearchRequest.class);
 
-			FlightSearchResponse flightInfoObject = FlightService.getFlightPrice(flightSearchRequest);
+			Map<Integer,List<FlightSearchResponse>> flightMap = FlightService.getFlightPrice(flightSearchRequest);
 
-			out.print(flightInfoObject.toString());
-			request.setAttribute("flight", flightInfoObject);
+			out.print(flightMap.toString());
+			System.out.println("====================reached Here===============");
+			request.setAttribute("flight", flightMap);
 			try {
-				getServletConfig().getServletContext().getRequestDispatcher(
-                        "/flightSearchResult.jsp").forward(request, response);
+				//getServletConfig().getServletContext().getRequestDispatcher(
+                  //      "flightSearchResult.jsp").forward(request, response);
+
+				RequestDispatcher dispatcher =
+						request.getRequestDispatcher("/jsp/flightSearchResult.jsp");
+				dispatcher.forward( request, response );
+				System.out.println("====================reached Here Also===============");
 			} catch (ServletException e) {
 				e.printStackTrace();
 			}

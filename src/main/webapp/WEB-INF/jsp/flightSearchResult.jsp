@@ -1,4 +1,5 @@
 <%@ page import="org.json.JSONObject" %>
+<%@ page import="java.util.Map" %>
 <!DOCTYPE html>
     <html lang="en">
       <head>
@@ -8,7 +9,8 @@
             <body>
 
                <form>
-                    <a><% out.print((JSONObject)request.getAttribute("flight"));%></a><br>
+                    <a><% out.print((Map)request.getAttribute("flight"));%></a><br>
+
                     <input type="text" name="origin" value="">
                     <br>
                     destination <br>
