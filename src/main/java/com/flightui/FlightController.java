@@ -1,4 +1,4 @@
-package com.flightui.controller;
+package com.flightui;
 
 import com.flightui.entities.FlightSearchRequest;
 import com.flightui.entities.FlightSearchResponse;
@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -15,11 +16,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 
-@WebServlet(urlPatterns = "/flight")
+@WebServlet(urlPatterns = "/flight/*")
 public class FlightController extends HttpServlet {
 
 	@Override
@@ -35,7 +37,8 @@ public class FlightController extends HttpServlet {
 
 			FlightSearchRequest flightSearchRequest = gson.fromJson(reader, FlightSearchRequest.class);
 
-			Map<Integer,List<FlightSearchResponse>> flightMap = FlightService.getFlightPrice(flightSearchRequest);
+			Map<Integer,List<FlightSearchResponse>> flightMap = new HashMap<>();
+                    //FlightService.getFlightPrice(flightSearchRequest);
 
 			out.print(flightMap.toString());
 			System.out.println("====================reached Here===============");
@@ -43,14 +46,17 @@ public class FlightController extends HttpServlet {
 			try {
 				//getServletConfig().getServletContext().getRequestDispatcher(
                   //      "flightSearchResult.jsp").forward(request, response);
+                ServletContext ctx = getServletConfig().getServletContext();
 
 				RequestDispatcher dispatcher =
-						request.getRequestDispatcher("/jsp/flightSearchResult.jsp");
+                        ctx.getRequestDispatcher("flightSearchResult.jsp");
+				System.out.println("forwarding now...");
 				dispatcher.forward( request, response );
 				System.out.println("====================reached Here Also===============");
 			} catch (ServletException e) {
 				e.printStackTrace();
 			}
+
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -59,5 +65,10 @@ public class FlightController extends HttpServlet {
 		}
 
 	}
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	    doPost(request,response);
+    }
 
 }
